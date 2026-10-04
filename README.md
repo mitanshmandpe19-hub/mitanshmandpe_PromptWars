@@ -1,14 +1,19 @@
 # BLIND SPOT 🔍
 
-> Live demo: (add Cloud Run link here after deployment)
+[![CI](https://github.com/mitanshmandpe19-hub/mitanshmandpe_PromptWars/actions/workflows/ci.yml/badge.svg)](https://github.com/mitanshmandpe19-hub/mitanshmandpe_PromptWars/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> **Live demo:** (add Render or Cloud Run link here after deployment)
 > 
 > 📄 **Architecture & Implementation Plan:** [docs/PLAN.md](file:///docs/PLAN.md)
+> 
+> ⚠️ **Privacy Notice:** *Do not enter sensitive personal information in this demo.*
 
 ---
 
 ## 💡 What It Does
 
-**Blind Spot** is an AI thinking companion built for the cognitive challenge **"THE BLIND SPOT"**: when people make important decisions, they naturally fixate on the first reasons that come to mind while overlooking hidden assumptions, systemic risks, unconsidered alternatives, and missing factors.
+**Blind Spot** is an evidence-aware critical thinking companion built for the cognitive challenge **"THE BLIND SPOT"**: when people make important decisions, they naturally fixate on the first reasons that come to mind while overlooking hidden assumptions, systemic risks, unconsidered alternatives, and missing factors.
 
 Blind Spot helps users examine their own reasoning **WITHOUT making the decision for them**:
 - 🚫 **Never decides or advises:** It will never recommend a decision, suggest what choice to make, or say *"you should"* or *"I recommend"*.
@@ -25,7 +30,7 @@ promptwar/
 ├── client/                       # React 18 + Vite Frontend SPA
 │   ├── src/
 │   │   ├── api/
-│   │   │   └── client.js         # Fetch client for /api endpoints
+│   │   │   └── client.js         # Fetch client for /api endpoints (supports VITE_API_URL)
 │   │   ├── components/
 │   │   │   ├── BlindSpotCard.jsx # Sticky note card with tilt, stamps & badge
 │   │   │   ├── Confetti.jsx       # Canvas confetti celebratory burst
@@ -42,9 +47,10 @@ promptwar/
 │   │   ├── hooks/
 │   │   │   └── useDecisionSession.js # Stage machine & session coordinator
 │   │   ├── tests/                # React Testing Library test suites
-│   │   ├── App.jsx               # Main application shell
+│   │   ├── App.jsx               # Main application shell with privacy footer
 │   │   ├── index.css             # Thinking Board design system & tokens
 │   │   └── main.jsx              # React entry point
+│   ├── vercel.json               # Vercel SPA routing configuration
 │   ├── index.html                # HTML template with Google Fonts
 │   ├── package.json              # Client dependencies
 │   └── vite.config.js            # Vite config with /api proxy & JSDOM
@@ -55,37 +61,21 @@ promptwar/
 │   │   ├── prompts/              # systemPrompt.js, schemas.js
 │   │   ├── middleware/           # security.js, rateLimit.js, errorHandler.js
 │   │   ├── app.js                # Express app & client/dist static server
-│   │   └── index.js              # Server entry & shutdown handlers
+│   │   └── index.js              # Server entry (0.0.0.0, PORT) & shutdown handlers
 │   └── tests/                    # Vitest & Supertest backend suites
 ├── docs/
 │   └── PLAN.md                   # Architecture & Implementation Plan
-├── Dockerfile                    # Multi-stage container build
+├── .github/
+│   └── workflows/
+│       └── ci.yml                # Automated CI pipeline (lint, test, build)
+├── render.yaml                   # Render Blueprint infrastructure specification
+├── Dockerfile                    # Multi-stage container build for Cloud Run
 ├── .env.example                  # Environment configuration template
 ├── .gitignore                    # Git ignore specifications
 ├── eslint.config.js              # ESLint 9 configuration
 ├── .prettierrc                   # Prettier formatting rules
 ├── vitest.config.js              # Vitest server test configuration
-└── package.json                  # Root npm scripts & workspace config
-```
-
----
-
-## 📸 Interface Preview ("The Thinking Board")
-
-```
-+-------------------------------------------------------------------------+
-|  💡 BLIND SPOT                  [1. Write] [2. Understood] [3. Examine] |
-+-------------------------------------------------------------------------+
-|                                                                         |
-|   ┌───────────────────────────┐    ┌────────────────────────────────┐  |
-|   │ 🎓 Unnegotiated Schedule  │    │ 💡 Active Consideration        │  |
-|   │ [● Direct Evidence]       │    │ "What would happen if you      │  |
-|   │ "don't have enough time"  │    │  requested 10h/week during     │  |
-|   │ ★ QUOTE VERIFIED          │    │  finals?"                      │  |
-|   │ [✓ RESOLVED]              │    │ ______________________________ │  |
-|   └───────────────────────────┘    │ [Update Reasoning ↵]           │  |
-|                                    └────────────────────────────────┘  |
-+-------------------------------------------------------------------------+
+└── package.json                  # Root npm scripts & unified workspace build
 ```
 
 ---
@@ -105,26 +95,27 @@ A core guarantee of Blind Spot is **evidence integrity**:
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started Locally
 
 ### Prerequisites
 - Node.js (v20+ recommended)
 - Google Gemini API Key ([Google AI Studio](https://aistudio.google.com/))
 
-### Installation
+### Installation & Local Run
 
-1. Clone the repository and install dependencies:
+1. Clone repository and install dependencies:
 ```bash
-git clone <repo-url>
-cd promptwar
+git clone https://github.com/mitanshmandpe19-hub/mitanshmandpe_PromptWars.git
+cd mitanshmandpe_PromptWars
 npm install
+npm --prefix client install
 ```
 
 2. Configure environment variables:
 ```bash
 cp .env.example .env
 ```
-Edit `.env` and provide your `GEMINI_API_KEY`:
+Edit `.env` and configure your API key:
 ```env
 GEMINI_API_KEY=your_actual_gemini_api_key
 GEMINI_MODEL=gemini-3.5-flash-lite
@@ -133,158 +124,109 @@ NODE_ENV=development
 CORS_ORIGIN=*
 ```
 
-3. Run locally:
+3. Build and run:
 ```bash
-# Start development server with auto-reload
-npm run dev
-
-# Or run standard start
+# Build frontend and start server
+npm run build
 npm start
+
+# Or run in development mode with auto-reload
+npm run dev
 ```
-The server will be available at `http://localhost:8080`.
+Open **http://localhost:8080** in your browser.
 
 ---
 
-## 📡 API Endpoints
+## ☁️ Deployment Guide
 
-### 1. Health Check
-`GET /api/health`
-- **Response:** `{ "status": "ok" }`
+### Environment Variables Reference
 
-### 2. Analyze Initial Decision
-`POST /api/analyze`
-- **Request Body:**
-```json
-{
-  "text": "I am thinking of quitting my internship because I don't have enough time to study."
-}
-```
-- **Response:**
-```json
-{
-  "needs_more_input": false,
-  "decision": "Quitting internship",
-  "stated_reason": "Not having enough time to study",
-  "assumption": "Internship hours cannot be negotiated or restructured",
-  "focused_on": ["Study hours", "Academic performance"],
-  "not_mentioned": ["Manager conversation", "Reduced hours option", "Remote work"],
-  "blind_spots": [
-    {
-      "id": "bs-1",
-      "title": "Rigid Schedule Assumption",
-      "type": "Assumption",
-      "why_flagged": "Have you verified whether your employer offers flexible or reduced hours during exams?",
-      "evidence_quote": "don't have enough time to study",
-      "evidence_status": "direct",
-      "quote_verified": true,
-      "confidence": "high",
-      "status": "open"
-    }
-  ],
-  "top_question": "What would happen if you requested a temporary reduction to 10-15 hours per week during exam season?"
-}
-```
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `GEMINI_API_KEY` | **Yes** | — | Google Gemini API key from AI Studio. Never commit this key. |
+| `GEMINI_MODEL` | No | `gemini-3.5-flash-lite` | Gemini model name (e.g. `gemini-3.5-flash-lite`, `gemini-2.5-flash-lite`). |
+| `PORT` | No | `8080` (or host assigned) | Port the Express server listens on (binds to `0.0.0.0`). |
+| `NODE_ENV` | No | `production` | Set to `production` in live deployments (disables `*` wildcard CORS). |
+| `CORS_ORIGIN` | No | `*` (dev) / strict (prod) | Comma-separated list of allowed origins (e.g. `https://my-app.vercel.app`). |
+| `RATE_LIMIT_WINDOW_MS` | No | `60000` (1 min) | Rate limiter window in milliseconds. |
+| `RATE_LIMIT_MAX` | No | `20` | Maximum API requests per IP per window. |
+| `VITE_API_URL` | No | `""` (relative `/api`) | Optional API URL for standalone frontend deployments (e.g. Vercel). |
 
-### 3. Update Analysis with Follow-Up Answer
-`POST /api/update`
-- **Request Body:**
-```json
-{
-  "originalText": "I am thinking of quitting my internship because I don't have enough time to study.",
-  "answers": [],
-  "previousAnalysis": { "..." : "..." },
-  "question": "What would happen if you requested a temporary reduction to 10-15 hours per week during exam season?",
-  "answer": "I asked my manager and they immediately approved 10 hours a week for the next month."
-}
-```
-- **Response:**
-Same shape as `/api/analyze` with updated statuses (`"open"`, `"partial"`, `"resolved"`), verified quotes across all answers, new `top_question` (or `null`), and `status_change_notes: [{ "id": "bs-1", "from": "open", "to": "resolved", "reason": "Manager approved 10h/week" }]`.
+> [!NOTE]
+> **Free Tier Sleep/Spin-up:** Free instances on Render and Cloud Run may spin down when idle. The very first request after inactivity may experience a 15–30 second cold start. Subsequent interactions are fast.
 
-### 4. Final Summary
-`POST /api/summary`
-- **Request Body:**
-```json
-{
-  "originalText": "I am thinking of quitting my internship because I don't have enough time to study.",
-  "answers": [{ "question": "...", "answer": "..." }],
-  "analysis": { "..." : "..." }
-}
-```
-- **Response:**
-```json
-{
-  "decision": "Adjusting internship schedule to 10h/week instead of quitting",
-  "checked": [
-    "Manager confirmed availability of 10-hour exam schedule",
-    "Gained 20 additional weekly study hours"
-  ],
-  "still_unknown": [
-    "Whether 10 hours pay impacts short-term living expenses"
-  ],
-  "next_checks": [
-    "Review monthly expenses against reduced earnings"
-  ],
-  "disclaimer": "This is a thinking aid, not advice. The decision is yours."
-}
+---
+
+### Option A: Render (Full App Deployment — Recommended)
+
+Render deploys both the backend API and compiled React SPA as a single web service.
+
+#### 1. Via Render Blueprint (`render.yaml`)
+1. In the [Render Dashboard](https://dashboard.render.com/), click **New +** $\rightarrow$ **Blueprint**.
+2. Connect your GitHub repository: `mitanshmandpe_PromptWars`.
+3. Render will detect `render.yaml` automatically.
+4. When prompted, enter your `GEMINI_API_KEY` secret.
+5. Click **Apply**.
+
+#### 2. Manual Web Service Setup on Render
+If configuring manually without blueprint:
+- **Environment:** `Node`
+- **Branch:** `main`
+- **Build Command:** `npm install && npm run build`
+- **Start Command:** `npm start`
+- **Health Check Path:** `/api/health`
+- **Environment Variables:**
+  - `GEMINI_API_KEY`: *(Your Secret Key)*
+  - `GEMINI_MODEL`: `gemini-3.5-flash-lite`
+  - `NODE_ENV`: `production`
+
+---
+
+### Option B: Vercel (Frontend Only — Optional)
+
+If you prefer hosting the React frontend on Vercel and the backend on Render/Cloud Run:
+
+1. Import the repository in [Vercel](https://vercel.com/).
+2. Set **Root Directory** to `client`.
+3. Framework Preset will auto-detect **Vite**.
+4. Set Environment Variable:
+   - `VITE_API_URL`: `https://your-backend-service.onrender.com`
+5. On your backend service, set:
+   - `CORS_ORIGIN`: `https://your-frontend.vercel.app`
+6. Deploy! SPA routing is pre-configured via [`client/vercel.json`](file:///client/vercel.json).
+
+---
+
+### Option C: Google Cloud Run (Containerized Deployment)
+
+Blind Spot includes a multi-stage [`Dockerfile`](file:///Dockerfile):
+
+```bash
+# Build and deploy to Cloud Run
+gcloud builds submit --tag gcr.io/YOUR_GCP_PROJECT_ID/blind-spot:latest .
+
+gcloud run deploy blind-spot \
+  --image gcr.io/YOUR_GCP_PROJECT_ID/blind-spot:latest \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars GEMINI_MODEL=gemini-3.5-flash-lite,NODE_ENV=production \
+  --set-secrets GEMINI_API_KEY=GEMINI_API_KEY:latest
 ```
 
 ---
 
 ## 🧪 Testing & Code Quality
 
-Run tests and quality checks:
 ```bash
-# Run all Vitest unit and integration test suites
+# Run all unit and integration test suites (Vitest + React Testing Library)
 npm test
 
-# Run Vitest in interactive watch mode
-npm run test:watch
-
-# Run ESLint
+# Run ESLint validation
 npm run lint
 
-# Automatically fix ESLint issues
-npm run lint:fix
-
-# Format code with Prettier
+# Format codebase with Prettier
 npm run format
-```
-
----
-
-## ☁️ Google Cloud Run Deployment
-
-Blind Spot is containerized via a multi-stage `Dockerfile` that builds the frontend and serves both API and static assets on a single Cloud Run URL.
-
-### 1. Build and Deploy with Google Cloud CLI
-
-```bash
-# 1. Authenticate with Google Cloud
-gcloud auth login
-gcloud config set project YOUR_GCP_PROJECT_ID
-
-# 2. Build and push container to Google Artifact Registry
-gcloud builds submit --tag gcr.io/YOUR_GCP_PROJECT_ID/blind-spot:latest .
-
-# 3. Deploy to Cloud Run
-gcloud run deploy blind-spot \
-  --image gcr.io/YOUR_GCP_PROJECT_ID/blind-spot:latest \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --set-env-vars GEMINI_MODEL=gemini-2.5-flash \
-  --set-secrets GEMINI_API_KEY=GEMINI_API_KEY:latest
-```
-
-### 2. Managing Secrets in Google Secret Manager (Recommended)
-```bash
-# Create secret for Gemini API key
-echo -n "your-gemini-api-key" | gcloud secrets create GEMINI_API_KEY --data-file=-
-
-# Grant Secret Accessor role to the Cloud Run service account
-gcloud secrets add-iam-policy-binding GEMINI_API_KEY \
-  --member="serviceAccount:YOUR_PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
-  --role="roles/secretmanager.secretAccessor"
 ```
 
 ---
