@@ -1,0 +1,45 @@
+{
+  "name": "blind-spot",
+  "version": "1.0.0",
+  "description": "Blind Spot - AI thinking companion for uncovering hidden assumptions and risks",
+  "type": "module",
+  "main": "server/src/index.js",
+  "scripts": {
+    "start": "node server/src/index.js",
+    "dev": "node --watch server/src/index.js",
+    "build": "npm --prefix client run build",
+    "test:server": "vitest run",
+    "test:client": "npm --prefix client test",
+    "test": "vitest run && npm --prefix client test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "blind-spot",
+    "ai",
+    "gemini",
+    "critical-thinking",
+    "reasoning"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^2.27.0",
+    "compression": "^1.8.2",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.9",
+    "supertest": "^7.3.1",
+    "vitest": "^5.0.3"
+  }
+}
