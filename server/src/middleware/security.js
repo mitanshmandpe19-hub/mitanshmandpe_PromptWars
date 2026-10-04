@@ -11,7 +11,10 @@ import express from 'express';
  * @param {string} [nodeEnv=process.env.NODE_ENV]
  * @returns {boolean|Array<string>}
  */
-export function getCorsOriginConfig(rawCorsOrigin = process.env.CORS_ORIGIN, nodeEnv = process.env.NODE_ENV) {
+export function getCorsOriginConfig(
+  rawCorsOrigin = process.env.CORS_ORIGIN,
+  nodeEnv = process.env.NODE_ENV,
+) {
   const isProd = nodeEnv === 'production';
   const origins = (rawCorsOrigin || '')
     .split(',')
@@ -45,7 +48,7 @@ export function getCorsOriginConfig(rawCorsOrigin = process.env.CORS_ORIGIN, nod
 export function createSecurityMiddleware(options = {}) {
   const corsOrigin = getCorsOriginConfig(
     options.corsOrigin ?? process.env.CORS_ORIGIN,
-    options.nodeEnv ?? process.env.NODE_ENV
+    options.nodeEnv ?? process.env.NODE_ENV,
   );
 
   return [

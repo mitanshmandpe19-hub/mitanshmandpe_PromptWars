@@ -98,7 +98,8 @@ export const GEMINI_ANALYZE_SCHEMA = {
           },
           why_flagged: {
             type: 'string',
-            description: 'Why this represents an unexamined risk or gap, phrased as a question/consideration',
+            description:
+              'Why this represents an unexamined risk or gap, phrased as a question/consideration',
           },
           evidence_quote: {
             type: 'string',
@@ -123,15 +124,11 @@ export const GEMINI_ANALYZE_SCHEMA = {
     },
     top_question: {
       type: 'string',
-      description: 'Exactly ONE thoughtful question prompting the user to examine the most crucial blind spot',
+      description:
+        'Exactly ONE thoughtful question prompting the user to examine the most crucial blind spot',
     },
   },
-  required: [
-    'needs_more_input',
-    'focused_on',
-    'not_mentioned',
-    'blind_spots',
-  ],
+  required: ['needs_more_input', 'focused_on', 'not_mentioned', 'blind_spots'],
 };
 
 export const GEMINI_UPDATE_SCHEMA = {
@@ -227,7 +224,8 @@ export const GEMINI_SUMMARY_SCHEMA = {
     next_checks: {
       type: 'array',
       items: { type: 'string' },
-      description: 'Actionable observations or validations the user can do next. Must map directly to open or partial blind spots.',
+      description:
+        'Actionable observations or validations the user can do next. Must map directly to open or partial blind spots.',
     },
     disclaimer: {
       type: 'string',

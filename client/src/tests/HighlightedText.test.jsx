@@ -34,7 +34,7 @@ describe('HighlightedText Component', () => {
         text={sampleText}
         blindSpots={blindSpots}
         activeQuote="don't have enough time to study"
-      />
+      />,
     );
 
     const mark = screen.getByRole('button');
@@ -44,11 +44,7 @@ describe('HighlightedText Component', () => {
   it('triggers onHoverQuote on mouse enter of highlighted mark', () => {
     const onHoverMock = vi.fn();
     render(
-      <HighlightedText
-        text={sampleText}
-        blindSpots={blindSpots}
-        onHoverQuote={onHoverMock}
-      />
+      <HighlightedText text={sampleText} blindSpots={blindSpots} onHoverQuote={onHoverMock} />,
     );
 
     const mark = screen.getByRole('button');

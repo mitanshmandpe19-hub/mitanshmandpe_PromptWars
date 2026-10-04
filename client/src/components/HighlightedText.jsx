@@ -34,25 +34,24 @@ export function HighlightedText({
 
   // Find occurrences of verified quotes in text
   // We can locate all occurrences safely with regex matching
-  const escapedQuotes = verifiedQuotes.map((q) =>
-    q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  );
+  const escapedQuotes = verifiedQuotes.map((q) => q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   const regex = new RegExp(`(${escapedQuotes.join('|')})`, 'gi');
 
   const parts = text.split(regex);
 
   return (
-    <div className="highlighted-text-box" tabIndex={0} aria-label="Original decision text with verified evidence highlights">
+    <div
+      className="highlighted-text-box"
+      tabIndex={0}
+      aria-label="Original decision text with verified evidence highlights"
+    >
       <p className="original-sentence">
         {parts.map((part, index) => {
-          const matchedQuote = verifiedQuotes.find(
-            (q) => q.toLowerCase() === part.toLowerCase()
-          );
+          const matchedQuote = verifiedQuotes.find((q) => q.toLowerCase() === part.toLowerCase());
 
           if (matchedQuote) {
             const isActive =
-              activeQuote &&
-              activeQuote.toLowerCase() === matchedQuote.toLowerCase();
+              activeQuote && activeQuote.toLowerCase() === matchedQuote.toLowerCase();
 
             return (
               <mark

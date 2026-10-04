@@ -1,12 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { analyzeText, updateSession, getSummary } from '../api/client.js';
+import { STAGES } from '../constants/index.js';
 
-export const STAGES = {
-  WRITE: 'WRITE',
-  UNDERSTOOD: 'UNDERSTOOD',
-  EXAMINE: 'EXAMINE',
-  SUMMARY: 'SUMMARY',
-};
+export { STAGES };
 
 const LOADING_MESSAGES = [
   "Looking for what's hiding...",
@@ -16,6 +12,12 @@ const LOADING_MESSAGES = [
   'Preparing a thoughtful follow-up question...',
 ];
 
+/**
+ * Custom hook coordinating multi-stage critical thinking exploration.
+ * Features built-in AbortController cancellation for stale/duplicate requests.
+ *
+ * @returns {Object} Session state and action handlers
+ */
 export function useDecisionSession() {
   const [stage, setStage] = useState(STAGES.WRITE);
   const [originalText, setOriginalText] = useState('');
@@ -31,8 +33,26 @@ export function useDecisionSession() {
   const [needsMoreInputMessage, setNeedsMoreInputMessage] = useState('');
   const [confettiTrigger, setConfettiTrigger] = useState(false);
 
+  const abortControllerRef = useRef(null);
+
+  // Clean up any ongoing request on unmount
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
   // Helper to rotate loading messages
   const startLoading = useCallback(() => {
+    // Abort previous in-flight request if any
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     setIsLoading(true);
     setError(null);
     let msgIndex = 0;
@@ -41,7 +61,11 @@ export function useDecisionSession() {
       msgIndex = (msgIndex + 1) % LOADING_MESSAGES.length;
       setLoadingMessage(LOADING_MESSAGES[msgIndex]);
     }, 2500);
-    return () => clearInterval(interval);
+
+    return {
+      signal: controller.signal,
+      stop: () => clearInterval(interval),
+    };
   }, []);
 
   /**
@@ -49,9 +73,9 @@ export function useDecisionSession() {
    */
   const handleAnalyze = useCallback(
     async (text) => {
-      const stopTimer = startLoading();
+      const { signal, stop } = startLoading();
       try {
-        const result = await analyzeText(text);
+        const result = await analyzeText(text, signal);
         setOriginalText(text);
         setAnalysis(result);
 
@@ -59,7 +83,7 @@ export function useDecisionSession() {
           setNeedsMoreInput(true);
           setNeedsMoreInputMessage(
             result.top_question ||
-              'Could you tell us a bit more about the choice you are considering and why?'
+              'Could you tell us a bit more about the choice you are considering and why?',
           );
           setStage(STAGES.WRITE);
         } else {
@@ -68,13 +92,14 @@ export function useDecisionSession() {
           setStage(STAGES.UNDERSTOOD);
         }
       } catch (err) {
+        if (err.name === 'AbortError') return;
         setError(err.message || 'Could not analyze your decision. Please try again.');
       } finally {
-        stopTimer();
+        stop();
         setIsLoading(false);
       }
     },
-    [startLoading]
+    [startLoading],
   );
 
   /**
@@ -92,16 +117,19 @@ export function useDecisionSession() {
       if (!analysis?.top_question) return;
 
       const currentQuestion = analysis.top_question;
-      const stopTimer = startLoading();
+      const { signal, stop } = startLoading();
 
       try {
-        const updatedResult = await updateSession({
-          originalText,
-          answers,
-          previousAnalysis: analysis,
-          question: currentQuestion,
-          answer: answerText,
-        });
+        const updatedResult = await updateSession(
+          {
+            originalText,
+            answers,
+            previousAnalysis: analysis,
+            question: currentQuestion,
+            answer: answerText,
+          },
+          signal,
+        );
 
         // Record round in local history
         const newAnswers = [...answers, { question: currentQuestion, answer: answerText }];
@@ -119,34 +147,39 @@ export function useDecisionSession() {
           setConfettiTrigger(true);
         }
       } catch (err) {
+        if (err.name === 'AbortError') return;
         setError(err.message || 'Could not update your analysis. Please try again.');
       } finally {
-        stopTimer();
+        stop();
         setIsLoading(false);
       }
     },
-    [analysis, originalText, answers, startLoading]
+    [analysis, originalText, answers, startLoading],
   );
 
   /**
    * Stage 3 -> 4: Finish exploration and get final summary
    */
   const handleFinish = useCallback(async () => {
-    const stopTimer = startLoading();
+    const { signal, stop } = startLoading();
     try {
-      const summaryResult = await getSummary({
-        originalText,
-        answers,
-        analysis,
-      });
+      const summaryResult = await getSummary(
+        {
+          originalText,
+          answers,
+          analysis,
+        },
+        signal,
+      );
 
       setSummary(summaryResult);
       setConfettiTrigger(true);
       setStage(STAGES.SUMMARY);
     } catch (err) {
+      if (err.name === 'AbortError') return;
       setError(err.message || 'Could not generate summary. Please try again.');
     } finally {
-      stopTimer();
+      stop();
       setIsLoading(false);
     }
   }, [originalText, answers, analysis, startLoading]);
@@ -155,6 +188,9 @@ export function useDecisionSession() {
    * Reset the whole session to start a new decision
    */
   const resetSession = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
     setStage(STAGES.WRITE);
     setOriginalText('');
     setAnalysis(null);

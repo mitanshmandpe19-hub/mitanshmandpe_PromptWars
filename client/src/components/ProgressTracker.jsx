@@ -34,7 +34,13 @@ export function ProgressTracker({ blindSpots = [] }) {
       </div>
 
       {/* Segmented bar */}
-      <div className="progress-bar-track" role="progressbar" aria-valuenow={resolved} aria-valuemin={0} aria-valuemax={total}>
+      <div
+        className="progress-bar-track"
+        role="progressbar"
+        aria-valuenow={resolved}
+        aria-valuemin={0}
+        aria-valuemax={total}
+      >
         <div
           className="segment segment-resolved"
           style={{ width: `${resolvedPct}%` }}

@@ -55,7 +55,13 @@ Remember:
  * @param {string} params.answer
  * @returns {string}
  */
-export function buildUpdatePrompt({ originalText, answers = [], previousAnalysis, question, answer }) {
+export function buildUpdatePrompt({
+  originalText,
+  answers = [],
+  previousAnalysis,
+  question,
+  answer,
+}) {
   const previousRounds = answers
     .map((qa, index) => `Round ${index + 1}:\nQ: ${qa.question}\nA: ${qa.answer}`)
     .join('\n\n');

@@ -7,7 +7,9 @@
 export function errorHandler(err, req, res, _next) {
   // Handle JSON parse errors from express.json()
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-    console.error('[Error 400] Type: SyntaxError | Message: Malformed JSON payload in request body');
+    console.error(
+      '[Error 400] Type: SyntaxError | Message: Malformed JSON payload in request body',
+    );
     return res.status(400).json({
       error: 'Malformed JSON payload in request body',
     });
@@ -15,7 +17,9 @@ export function errorHandler(err, req, res, _next) {
 
   // Handle entity too large errors (payload > 10kb)
   if (err.type === 'entity.too.large') {
-    console.error('[Error 413] Type: PayloadTooLarge | Message: Request payload exceeds 10kb limit');
+    console.error(
+      '[Error 413] Type: PayloadTooLarge | Message: Request payload exceeds 10kb limit',
+    );
     return res.status(413).json({
       error: 'Request payload exceeds 10kb limit',
     });
@@ -25,7 +29,9 @@ export function errorHandler(err, req, res, _next) {
   const errorType = err.errorType || err.name || 'Error';
 
   // Log error TYPE and message to console (never logs user text or API keys)
-  console.error(`[Error ${statusCode}] Type: ${errorType} | Message: ${err.message || 'Internal error'}`);
+  console.error(
+    `[Error ${statusCode}] Type: ${errorType} | Message: ${err.message || 'Internal error'}`,
+  );
 
   // Return the specific friendly message
   const clientMessage = err.message || 'An unexpected error occurred. Please try again.';

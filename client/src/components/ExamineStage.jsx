@@ -49,9 +49,7 @@ export function ExamineStage({
       {/* Blind Spot Cards Grid */}
       <div className="blind-spots-grid">
         {blindSpots.map((spot, index) => {
-          const changeNote = (statusChangeNotes || []).find(
-            (n) => n.id === spot.id
-          );
+          const changeNote = (statusChangeNotes || []).find((n) => n.id === spot.id);
           const isHighlighted =
             activeHighlightQuote &&
             spot.evidence_quote &&
@@ -84,7 +82,8 @@ export function ExamineStage({
         <div className="all-cleared-banner sticky-note sticky-teal">
           <h3>🎉 Nice, the main blind spots have been explored!</h3>
           <p>
-            You have answered the critical follow-up questions. Ready to view your final thinking summary?
+            You have answered the critical follow-up questions. Ready to view your final thinking
+            summary?
           </p>
           <div className="cleared-actions">
             <button

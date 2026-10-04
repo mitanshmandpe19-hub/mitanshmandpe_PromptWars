@@ -15,17 +15,42 @@ export function Header({ currentStage, onReset }) {
         Skip to main content
       </a>
       <div className="container header-inner">
-        <div className="brand-group" onClick={onReset} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && onReset()}>
+        <div
+          className="brand-group"
+          onClick={onReset}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && onReset()}
+        >
           <div className="mascot-badge" aria-hidden="true">
             {/* Friendly Hand-drawn Lightbulb / Magnifier Mascot */}
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <circle cx="15" cy="14" r="9" fill="#FFC93C" stroke="#1B2340" strokeWidth="2.5" />
               <path d="M12 23H18" stroke="#1B2340" strokeWidth="2.5" strokeLinecap="round" />
               <path d="M13.5 26H16.5" stroke="#1B2340" strokeWidth="2.5" strokeLinecap="round" />
               <circle cx="12" cy="12" r="1.5" fill="#1B2340" />
               <circle cx="18" cy="12" r="1.5" fill="#1B2340" />
-              <path d="M13 16C14 17 16 17 17 16" stroke="#1B2340" strokeWidth="2" strokeLinecap="round" />
-              <line x1="21.5" y1="20.5" x2="28" y2="27" stroke="#1B2340" strokeWidth="3" strokeLinecap="round" />
+              <path
+                d="M13 16C14 17 16 17 17 16"
+                stroke="#1B2340"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <line
+                x1="21.5"
+                y1="20.5"
+                x2="28"
+                y2="27"
+                stroke="#1B2340"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
             </svg>
           </div>
           <div>
@@ -39,8 +64,7 @@ export function Header({ currentStage, onReset }) {
           <ol className="stage-list">
             {stageLabels.map((item, idx) => {
               const isCurrent = currentStage === item.key;
-              const isPast =
-                stageLabels.findIndex((s) => s.key === currentStage) > idx;
+              const isPast = stageLabels.findIndex((s) => s.key === currentStage) > idx;
 
               return (
                 <li

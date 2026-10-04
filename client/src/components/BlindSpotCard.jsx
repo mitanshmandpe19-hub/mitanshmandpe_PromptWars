@@ -1,18 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { EvidenceBadge } from './EvidenceBadge.jsx';
 
 /**
  * Interactive sticky-note card representing a single flagged blind spot.
- *
- * @param {Object} props
- * @param {Object} props.spot
- * @param {number} props.index
- * @param {boolean} [props.isHighlighted]
- * @param {Object} [props.statusChangeNote]
- * @param {Function} [props.onHoverQuote]
- * @param {Function} [props.onLeaveQuote]
  */
-export function BlindSpotCard({
+export const BlindSpotCard = memo(function BlindSpotCard({
   spot,
   index = 0,
   isHighlighted = false,
@@ -30,8 +22,7 @@ export function BlindSpotCard({
 
   const stickyTypeClass = typeClassMap[spot.type] || 'sticky-yellow';
   const tiltClass = index % 2 === 0 ? 'tilt-left' : 'tilt-right';
-
-  const hasVerifiedQuote = spot.quote_verified && spot.evidence_quote;
+  const hasVerifiedQuote = Boolean(spot.quote_verified && spot.evidence_quote);
 
   const handleMouseEnter = () => {
     if (hasVerifiedQuote && onHoverQuote) {
@@ -91,8 +82,10 @@ export function BlindSpotCard({
 
         <div className="confidence-meter" title={`Confidence: ${spot.confidence}`}>
           <span className="confidence-label">Impact:</span>
-          <span className={`confidence-dot ${spot.confidence === 'high' || spot.confidence === 'medium' || spot.confidence === 'low' ? 'filled' : ''}`} />
-          <span className={`confidence-dot ${spot.confidence === 'high' || spot.confidence === 'medium' ? 'filled' : ''}`} />
+          <span className="confidence-dot filled" />
+          <span
+            className={`confidence-dot ${spot.confidence === 'high' || spot.confidence === 'medium' ? 'filled' : ''}`}
+          />
           <span className={`confidence-dot ${spot.confidence === 'high' ? 'filled' : ''}`} />
           <span className="confidence-text">{spot.confidence}</span>
         </div>
@@ -107,7 +100,7 @@ export function BlindSpotCard({
         </blockquote>
       )}
 
-      {/* Expand / Collapse Why Flagged Accordion */}
+      {/* Why Flagged Accordion */}
       <div className="why-flagged-section">
         <button
           type="button"
@@ -125,7 +118,7 @@ export function BlindSpotCard({
         )}
       </div>
 
-      {/* Status Change Note if just updated */}
+      {/* Status Change Note */}
       {statusChangeNote && (
         <div className="status-note-banner">
           <span className="note-icon">💬</span>
@@ -134,121 +127,25 @@ export function BlindSpotCard({
       )}
 
       <style>{`
-        .blind-spot-card {
-          display: flex;
-          flex-direction: column;
-          gap: 14px;
-        }
-        .highlighted-card {
-          box-shadow: 0 0 0 4px var(--coral), var(--shadow-lg) !important;
-          transform: scale(1.02) !important;
-        }
-        .card-top-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          flex-wrap: wrap;
-          gap: 8px;
-        }
-        .type-tag {
-          font-size: 0.75rem;
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          background: var(--ink);
-          color: #fff;
-          padding: 3px 8px;
-          border-radius: var(--radius-sm);
-        }
-        .status-stamps-group {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          flex-wrap: wrap;
-        }
-        .spot-title {
-          font-size: 1.25rem;
-          line-height: 1.3;
-          margin: 0;
-        }
-        .card-meta-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          flex-wrap: wrap;
-          gap: 10px;
-        }
-        .confidence-meter {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          font-size: 0.75rem;
-          font-weight: 700;
-          color: var(--ink-muted);
-        }
-        .confidence-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          border: 1px solid var(--ink);
-          background: #e2e4ea;
-        }
-        .confidence-dot.filled {
-          background: var(--ink);
-        }
-        .confidence-text {
-          text-transform: capitalize;
-          margin-left: 2px;
-        }
-        .evidence-quote-box {
-          background: rgba(255, 255, 255, 0.75);
-          border-left: 3.5px solid var(--ink);
-          padding: 8px 12px;
-          border-radius: 4px;
-          font-style: italic;
-          font-size: 0.9rem;
-          color: var(--ink);
-          margin: 0;
-        }
-        .why-toggle-btn {
-          background: transparent;
-          border: none;
-          box-shadow: none;
-          color: var(--ink);
-          font-size: 0.85rem;
-          font-weight: 700;
-          padding: 4px 0;
-          min-height: auto;
-          min-width: auto;
-          cursor: pointer;
-          text-decoration: underline;
-        }
-        .why-toggle-btn:hover {
-          transform: none;
-          color: var(--coral);
-        }
-        .why-content {
-          margin-top: 8px;
-          padding: 10px 14px;
-          background: rgba(255, 255, 255, 0.9);
-          border: 1.5px solid var(--ink);
-          border-radius: var(--radius-sm);
-          font-size: 0.9rem;
-          line-height: 1.5;
-        }
-        .status-note-banner {
-          display: flex;
-          align-items: flex-start;
-          gap: 6px;
-          background: var(--bg-paper);
-          border: 1.5px solid var(--ink);
-          border-radius: var(--radius-sm);
-          padding: 8px 12px;
-          font-size: 0.825rem;
-          font-weight: 600;
-          margin-top: 4px;
-        }
+        .blind-spot-card { display: flex; flex-direction: column; gap: 14px; }
+        .highlighted-card { box-shadow: 0 0 0 4px var(--coral), var(--shadow-lg) !important; transform: scale(1.02) !important; }
+        .card-top-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+        .type-tag { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; background: var(--ink); color: #fff; padding: 3px 8px; border-radius: var(--radius-sm); }
+        .status-stamps-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .spot-title { font-size: 1.25rem; line-height: 1.3; margin: 0; }
+        .card-meta-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .confidence-meter { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 700; color: var(--ink-muted); }
+        .confidence-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--ink); background: #e2e4ea; }
+        .confidence-dot.filled { background: var(--ink); }
+        .confidence-text { text-transform: capitalize; margin-left: 2px; }
+        .evidence-quote-box { background: rgba(255, 255, 255, 0.75); border-left: 3.5px solid var(--ink); padding: 8px 12px; border-radius: 4px; font-style: italic; font-size: 0.9rem; color: var(--ink); margin: 0; }
+        .why-toggle-btn { background: transparent; border: none; box-shadow: none; color: var(--ink); font-size: 0.85rem; font-weight: 700; padding: 4px 0; min-height: auto; min-width: auto; cursor: pointer; text-decoration: underline; }
+        .why-toggle-btn:hover { transform: none; color: var(--coral); }
+        .why-content { margin-top: 8px; padding: 10px 14px; background: rgba(255, 255, 255, 0.9); border: 1.5px solid var(--ink); border-radius: var(--radius-sm); font-size: 0.9rem; line-height: 1.5; }
+        .status-note-banner { display: flex; align-items: flex-start; gap: 6px; background: var(--bg-paper); border: 1.5px solid var(--ink); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 0.825rem; font-weight: 600; margin-top: 4px; }
       `}</style>
     </article>
   );
-}
+});
+
+export default BlindSpotCard;

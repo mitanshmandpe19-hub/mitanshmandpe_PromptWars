@@ -10,13 +10,7 @@ import React, { useState } from 'react';
  * @param {Function} props.onSkip
  * @param {Function} props.onFinish
  */
-export function QuestionCard({
-  question,
-  isLoading = false,
-  onAnswer,
-  onSkip,
-  onFinish,
-}) {
+export function QuestionCard({ question, isLoading = false, onAnswer, onSkip, onFinish }) {
   const [answerInput, setAnswerInput] = useState('');
 
   const handleSubmit = (e) => {
@@ -27,7 +21,10 @@ export function QuestionCard({
   };
 
   return (
-    <section className="sticky-note sticky-white spotlight-card" aria-labelledby="spotlight-question-title">
+    <section
+      className="sticky-note sticky-white spotlight-card"
+      aria-labelledby="spotlight-question-title"
+    >
       <div className="spotlight-badge-row">
         <span className="spotlight-badge">💡 Active Consideration</span>
       </div>
@@ -62,20 +59,10 @@ export function QuestionCard({
           </button>
 
           <div className="auxiliary-buttons">
-            <button
-              type="button"
-              className="btn-ghost"
-              onClick={onSkip}
-              disabled={isLoading}
-            >
+            <button type="button" className="btn-ghost" onClick={onSkip} disabled={isLoading}>
               Skip this question
             </button>
-            <button
-              type="button"
-              className="btn-outline"
-              onClick={onFinish}
-              disabled={isLoading}
-            >
+            <button type="button" className="btn-outline" onClick={onFinish} disabled={isLoading}>
               Finish & Summary 🏁
             </button>
           </div>

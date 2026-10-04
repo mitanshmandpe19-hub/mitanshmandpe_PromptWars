@@ -62,21 +62,16 @@ export const UpdateRequestSchema = z.object({
     .max(50, 'Cannot exceed 50 previous answers')
     .optional()
     .default([]),
-  previousAnalysis: z
-    .record(z.any(), {
-      error: 'previousAnalysis object is required',
-    }),
+  previousAnalysis: z.record(z.any(), {
+    error: 'previousAnalysis object is required',
+  }),
   question: stringField('question', 1, 500),
   answer: stringField('answer', 1, 1500),
 });
 
 export const SummaryRequestSchema = z.object({
   originalText: stringField('originalText', 10, 1500),
-  answers: z
-    .array(AnswerItemSchema)
-    .max(50, 'Cannot exceed 50 answers')
-    .optional()
-    .default([]),
+  answers: z.array(AnswerItemSchema).max(50, 'Cannot exceed 50 answers').optional().default([]),
   analysis: z.record(z.any(), {
     error: 'analysis object is required',
   }),
@@ -124,7 +119,8 @@ export function validateAiAnalyzeOutput(rawData) {
   if (!result.success) {
     const issues = getErrorIssues(result.error);
     const errorMsg =
-      issues.map((e) => `${e.path.join('.')}: ${e.message}`).join('; ') || 'Schema validation failed';
+      issues.map((e) => `${e.path.join('.')}: ${e.message}`).join('; ') ||
+      'Schema validation failed';
     return { success: false, error: errorMsg };
   }
   return { success: true, data: result.data };
@@ -141,7 +137,8 @@ export function validateAiUpdateOutput(rawData) {
   if (!result.success) {
     const issues = getErrorIssues(result.error);
     const errorMsg =
-      issues.map((e) => `${e.path.join('.')}: ${e.message}`).join('; ') || 'Schema validation failed';
+      issues.map((e) => `${e.path.join('.')}: ${e.message}`).join('; ') ||
+      'Schema validation failed';
     return { success: false, error: errorMsg };
   }
   return { success: true, data: result.data };
@@ -158,7 +155,8 @@ export function validateAiSummaryOutput(rawData) {
   if (!result.success) {
     const issues = getErrorIssues(result.error);
     const errorMsg =
-      issues.map((e) => `${e.path.join('.')}: ${e.message}`).join('; ') || 'Schema validation failed';
+      issues.map((e) => `${e.path.join('.')}: ${e.message}`).join('; ') ||
+      'Schema validation failed';
     return { success: false, error: errorMsg };
   }
   return { success: true, data: result.data };

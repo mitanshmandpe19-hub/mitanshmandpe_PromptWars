@@ -20,7 +20,8 @@ export function Timeline({ answers = [] }) {
         aria-expanded={isOpen}
       >
         <span className="timeline-toggle-title">
-          📖 Your thinking so far ({answers.length} {answers.length === 1 ? 'round' : 'rounds'} explored)
+          📖 Your thinking so far ({answers.length} {answers.length === 1 ? 'round' : 'rounds'}{' '}
+          explored)
         </span>
         <span className="timeline-toggle-arrow">{isOpen ? '▲' : '▼'}</span>
       </button>

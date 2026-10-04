@@ -95,7 +95,8 @@ export function verifyBlindSpotQuotes(blindSpots = [], userCorpus = '') {
       return {
         ...spot,
         evidence_quote: rawQuote.trim(),
-        evidence_status: spot.evidence_status === 'none' ? 'direct' : spot.evidence_status || 'direct',
+        evidence_status:
+          spot.evidence_status === 'none' ? 'direct' : spot.evidence_status || 'direct',
         quote_verified: true,
       };
     }

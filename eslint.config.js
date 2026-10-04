@@ -9,6 +9,7 @@ export default [
       sourceType: 'module',
       globals: {
         ...globals.node,
+        ...globals.browser,
         ...globals.es2024,
       },
     },
@@ -21,6 +22,13 @@ export default [
     },
   },
   {
-    ignores: ['node_modules/**', 'client/dist/**', 'coverage/**', '.system_generated/**'],
+    ignores: [
+      'node_modules/**',
+      'client/dist/**',
+      'dist/**',
+      'build/**',
+      'coverage/**',
+      '.system_generated/**',
+    ],
   },
 ];

@@ -1,37 +1,20 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
-import dotenv from 'dotenv';
+import { config } from './config/index.js';
 import { createApp } from './app.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Explicitly resolve .env path relative to project root
-const projectRootEnvPath = path.resolve(__dirname, '../../.env');
-if (fs.existsSync(projectRootEnvPath)) {
-  dotenv.config({ path: projectRootEnvPath });
-} else {
-  dotenv.config(); // fallback to cwd
-}
-
-const rawApiKey = process.env.GEMINI_API_KEY;
-const apiKey = rawApiKey?.trim();
-const isKeyConfigured = Boolean(apiKey && apiKey.length > 0);
-const keyLength = apiKey ? apiKey.length : 0;
-
-const PORT = parseInt(process.env.PORT, 10) || 8080;
-const HOST = '0.0.0.0';
 const app = createApp();
 
-const server = app.listen(PORT, HOST, () => {
-  console.log(`[Blind Spot Backend] Server running on http://${HOST}:${PORT}`);
-  console.log(`[Blind Spot Backend] Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`[Blind Spot Backend] Model: ${process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite'}`);
-  console.log(`[Blind Spot Backend] GEMINI_API_KEY configured: ${isKeyConfigured} (length: ${keyLength})`);
+const server = app.listen(config.port, config.host, () => {
+  console.log(`[Blind Spot Backend] Server running on http://${config.host}:${config.port}`);
+  console.log(`[Blind Spot Backend] Environment: ${config.nodeEnv}`);
+  console.log(`[Blind Spot Backend] Model: ${config.geminiModel}`);
+  console.log(
+    `[Blind Spot Backend] GEMINI_API_KEY configured: ${config.isKeyConfigured} (length: ${config.keyLength})`,
+  );
 
-  if (!isKeyConfigured) {
-    console.warn('\n⚠️  [Blind Spot Backend] GEMINI_API_KEY is not set. Add it to .env or deployment environment variables and restart.\n');
+  if (!config.isKeyConfigured) {
+    console.warn(
+      '\n⚠️  [Blind Spot Backend] GEMINI_API_KEY is not set. Add it to .env or deployment environment variables and restart.\n',
+    );
   }
 });
 

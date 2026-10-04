@@ -3,10 +3,12 @@
  * Reads backend URL from VITE_API_URL or defaults to relative '/api'.
  */
 const rawApiUrl = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || '';
-const API_BASE = rawApiUrl ? `${rawApiUrl.replace(/\/$/, '')}/api` : '/api';
+export const API_BASE = rawApiUrl ? `${rawApiUrl.replace(/\/$/, '')}/api` : '/api';
 
 /**
  * Helper to handle fetch responses safely.
+ * @param {Response} response
+ * @returns {Promise<any>}
  */
 async function handleResponse(response) {
   const isJson = response.headers.get('content-type')?.includes('application/json');
@@ -26,14 +28,16 @@ async function handleResponse(response) {
 /**
  * Analyzes the user's initial decision dilemma.
  *
- * @param {string} text
+ * @param {string} text - The decision text
+ * @param {AbortSignal} [signal] - Optional abort signal to cancel in-flight request
  * @returns {Promise<Object>}
  */
-export async function analyzeText(text) {
+export async function analyzeText(text, signal) {
   const response = await fetch(`${API_BASE}/analyze`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text }),
+    signal,
   });
   return handleResponse(response);
 }
@@ -47,13 +51,15 @@ export async function analyzeText(text) {
  * @param {Object} params.previousAnalysis
  * @param {string} params.question
  * @param {string} params.answer
+ * @param {AbortSignal} [signal] - Optional abort signal
  * @returns {Promise<Object>}
  */
-export async function updateSession(params) {
+export async function updateSession(params, signal) {
   const response = await fetch(`${API_BASE}/update`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(params),
+    signal,
   });
   return handleResponse(response);
 }
@@ -65,13 +71,15 @@ export async function updateSession(params) {
  * @param {string} params.originalText
  * @param {Array<{question: string, answer: string}>} params.answers
  * @param {Object} params.analysis
+ * @param {AbortSignal} [signal] - Optional abort signal
  * @returns {Promise<Object>}
  */
-export async function getSummary(params) {
+export async function getSummary(params, signal) {
   const response = await fetch(`${API_BASE}/summary`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(params),
+    signal,
   });
   return handleResponse(response);
 }

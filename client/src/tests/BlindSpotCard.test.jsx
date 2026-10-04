@@ -50,10 +50,14 @@ describe('BlindSpotCard Component', () => {
   it('expands why flagged section on toggle click', () => {
     render(<BlindSpotCard spot={verifiedSpot} index={0} />);
     const toggleBtn = screen.getByRole('button', { name: /Why we flagged this/i });
-    expect(screen.queryByText('Have you verified if reduced hours are possible?')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Have you verified if reduced hours are possible?'),
+    ).not.toBeInTheDocument();
 
     fireEvent.click(toggleBtn);
-    expect(screen.getByText('Have you verified if reduced hours are possible?')).toBeInTheDocument();
+    expect(
+      screen.getByText('Have you verified if reduced hours are possible?'),
+    ).toBeInTheDocument();
   });
 
   it('triggers onHoverQuote on mouse enter when quote is verified', () => {
