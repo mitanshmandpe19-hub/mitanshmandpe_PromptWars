@@ -110,6 +110,9 @@ export function App() {
           <p className="footer-note">
             <strong>BLIND SPOT</strong> — An evidence-aware critical thinking companion. We never make the decision for you.
           </p>
+          <p className="footer-privacy">
+            🔒 Do not enter sensitive personal information in this demo.
+          </p>
         </div>
       </footer>
 
@@ -134,6 +137,12 @@ export function App() {
         .footer-note {
           font-size: 0.85rem;
           color: var(--ink-muted);
+          margin-bottom: 4px;
+        }
+        .footer-privacy {
+          font-size: 0.8rem;
+          color: var(--ink-muted);
+          font-style: italic;
         }
         .sr-only {
           position: absolute;

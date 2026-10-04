@@ -1,8 +1,9 @@
 /**
  * API client for the Blind Spot backend.
+ * Reads backend URL from VITE_API_URL or defaults to relative '/api'.
  */
-
-const API_BASE = '/api';
+const rawApiUrl = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || '';
+const API_BASE = rawApiUrl ? `${rawApiUrl.replace(/\/$/, '')}/api` : '/api';
 
 /**
  * Helper to handle fetch responses safely.

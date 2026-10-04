@@ -1,11 +1,14 @@
 import rateLimit from 'express-rate-limit';
 
+const windowMs = parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 60 * 1000; // 1 minute default
+const maxRequests = parseInt(process.env.RATE_LIMIT_MAX, 10) || 20; // max 20 requests per IP per window
+
 /**
- * Rate limit middleware allowing ~20 requests per minute per IP.
+ * Rate limit middleware with configurable window and request threshold.
  */
 export const apiLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 20, // max 20 requests per IP per window
+  windowMs,
+  max: maxRequests,
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: {

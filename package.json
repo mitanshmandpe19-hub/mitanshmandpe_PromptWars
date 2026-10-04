@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server/src/index.js",
     "dev": "node --watch server/src/index.js",
-    "build": "npm --prefix client run build",
+    "build": "npm --prefix client install && npm --prefix client run build",
     "test:server": "vitest run",
     "test:client": "npm --prefix client test",
     "test": "vitest run && npm --prefix client test",

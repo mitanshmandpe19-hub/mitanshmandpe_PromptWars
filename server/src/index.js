@@ -21,16 +21,17 @@ const isKeyConfigured = Boolean(apiKey && apiKey.length > 0);
 const keyLength = apiKey ? apiKey.length : 0;
 
 const PORT = parseInt(process.env.PORT, 10) || 8080;
+const HOST = '0.0.0.0';
 const app = createApp();
 
-const server = app.listen(PORT, () => {
-  console.log(`[Blind Spot Backend] Server running on http://localhost:${PORT}`);
+const server = app.listen(PORT, HOST, () => {
+  console.log(`[Blind Spot Backend] Server running on http://${HOST}:${PORT}`);
   console.log(`[Blind Spot Backend] Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`[Blind Spot Backend] Model: ${process.env.GEMINI_MODEL || 'gemini-2.5-flash'}`);
+  console.log(`[Blind Spot Backend] Model: ${process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite'}`);
   console.log(`[Blind Spot Backend] GEMINI_API_KEY configured: ${isKeyConfigured} (length: ${keyLength})`);
 
   if (!isKeyConfigured) {
-    console.warn('\n⚠️  [Blind Spot Backend] GEMINI_API_KEY is not set. Add it to .env and restart.\n');
+    console.warn('\n⚠️  [Blind Spot Backend] GEMINI_API_KEY is not set. Add it to .env or deployment environment variables and restart.\n');
   }
 });
 
