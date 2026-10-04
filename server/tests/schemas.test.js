@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  AnalyzeResponseZodSchema,
-} from '../src/prompts/schemas.js';
+import { AnalyzeResponseZodSchema } from '../src/prompts/schemas.js';
 import {
   validateAiAnalyzeOutput,
   validateAiUpdateOutput,

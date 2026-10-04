@@ -33,17 +33,17 @@ describe('Quote Verifier Service', () => {
 
   describe('isQuoteInText', () => {
     it('verifies exact match', () => {
-      const quote = "quitting my internship";
+      const quote = 'quitting my internship';
       expect(isQuoteInText(quote, sampleOriginalText)).toBe(true);
     });
 
     it('verifies case difference', () => {
-      const quote = "QUITTING MY INTERNSHIP";
+      const quote = 'QUITTING MY INTERNSHIP';
       expect(isQuoteInText(quote, sampleOriginalText)).toBe(true);
     });
 
     it('verifies extra whitespace in quote and text', () => {
-      const quote = "quitting    my \n internship";
+      const quote = 'quitting    my \n internship';
       expect(isQuoteInText(quote, sampleOriginalText)).toBe(true);
     });
 
@@ -54,13 +54,13 @@ describe('Quote Verifier Service', () => {
     });
 
     it('rejects fake/fabricated quote', () => {
-      const fakeQuote = "I hate my current internship boss";
+      const fakeQuote = 'I hate my current internship boss';
       expect(isQuoteInText(fakeQuote, sampleOriginalText)).toBe(false);
     });
 
     it('verifies quote found in an earlier answer corpus', () => {
       const corpus = buildUserCorpus(sampleOriginalText, sampleAnswers);
-      const quote = "assume they will say no";
+      const quote = 'assume they will say no';
       expect(isQuoteInText(quote, corpus)).toBe(true);
     });
   });
@@ -70,11 +70,11 @@ describe('Quote Verifier Service', () => {
       const corpus = buildUserCorpus(
         sampleOriginalText,
         sampleAnswers,
-        'My final exam is in two weeks.'
+        'My final exam is in two weeks.',
       );
-      expect(corpus).toContain("quitting my internship");
-      expect(corpus).toContain("spoken with my manager");
-      expect(corpus).toContain("final exam is in two weeks");
+      expect(corpus).toContain('quitting my internship');
+      expect(corpus).toContain('spoken with my manager');
+      expect(corpus).toContain('final exam is in two weeks');
     });
   });
 

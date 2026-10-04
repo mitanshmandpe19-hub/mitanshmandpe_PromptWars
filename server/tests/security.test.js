@@ -9,7 +9,9 @@ describe('CORS and Security Middleware', () => {
       expect(getCorsOriginConfig('*', 'development')).toBe(true);
       expect(getCorsOriginConfig('', 'development')).toBe(true);
       expect(getCorsOriginConfig(undefined, 'development')).toBe(true);
-      expect(getCorsOriginConfig('https://dev.example.com', 'development')).toEqual(['https://dev.example.com']);
+      expect(getCorsOriginConfig('https://dev.example.com', 'development')).toEqual([
+        'https://dev.example.com',
+      ]);
     });
 
     it('disallows wildcard "*" in production environment', () => {
@@ -23,7 +25,7 @@ describe('CORS and Security Middleware', () => {
         'https://my-app.vercel.app',
       ]);
       expect(
-        getCorsOriginConfig('https://app.vercel.app, https://api.onrender.com', 'production')
+        getCorsOriginConfig('https://app.vercel.app, https://api.onrender.com', 'production'),
       ).toEqual(['https://app.vercel.app', 'https://api.onrender.com']);
     });
   });
@@ -38,9 +40,7 @@ describe('CORS and Security Middleware', () => {
       securityMiddlewares.forEach((mw) => app.use(mw));
       app.get('/test', (req, res) => res.json({ ok: true }));
 
-      const res = await request(app)
-        .get('/test')
-        .set('Origin', 'https://malicious-site.com');
+      const res = await request(app).get('/test').set('Origin', 'https://malicious-site.com');
 
       expect(res.headers['access-control-allow-origin']).toBeUndefined();
     });
@@ -58,7 +58,9 @@ describe('CORS and Security Middleware', () => {
         .get('/test')
         .set('Origin', 'https://trusted-frontend.vercel.app');
 
-      expect(res.headers['access-control-allow-origin']).toBe('https://trusted-frontend.vercel.app');
+      expect(res.headers['access-control-allow-origin']).toBe(
+        'https://trusted-frontend.vercel.app',
+      );
     });
   });
 });

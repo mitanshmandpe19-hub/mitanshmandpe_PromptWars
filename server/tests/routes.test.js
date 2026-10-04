@@ -60,9 +60,7 @@ describe('API Endpoints Integration Tests', () => {
 
       vi.spyOn(geminiService, 'analyzeDecision').mockResolvedValue(mockAiResponse);
 
-      const response = await request(app)
-        .post('/api/analyze')
-        .send({ text: sampleUserText });
+      const response = await request(app).post('/api/analyze').send({ text: sampleUserText });
 
       expect(response.status).toBe(200);
       expect(response.body.decision).toBe('Quitting internship');
@@ -79,14 +77,12 @@ describe('API Endpoints Integration Tests', () => {
       expect(response.body.blind_spots[1].evidence_status).toBe('none');
 
       expect(response.body.top_question).toBe(
-        'Could you ask your manager about flexible exam-season hours?'
+        'Could you ask your manager about flexible exam-season hours?',
       );
     });
 
     it('returns 400 when text is too short (< 10 characters)', async () => {
-      const response = await request(app)
-        .post('/api/analyze')
-        .send({ text: 'Help me' });
+      const response = await request(app).post('/api/analyze').send({ text: 'Help me' });
 
       expect(response.status).toBe(400);
       expect(response.body.error).toContain('at least 10 characters');
@@ -102,7 +98,8 @@ describe('API Endpoints Integration Tests', () => {
   describe('POST /api/update', () => {
     it('successfully updates analysis with user answer and notes status changes', async () => {
       const payload = {
-        originalText: "I am thinking of quitting my internship because I don't have enough time to study.",
+        originalText:
+          "I am thinking of quitting my internship because I don't have enough time to study.",
         answers: [
           {
             question: 'Could you ask your manager about flexible exam-season hours?',
@@ -170,7 +167,8 @@ describe('API Endpoints Integration Tests', () => {
   describe('POST /api/summary', () => {
     it('successfully generates summary with verified disclaimer and checks', async () => {
       const payload = {
-        originalText: "I am thinking of quitting my internship because I don't have enough time to study.",
+        originalText:
+          "I am thinking of quitting my internship because I don't have enough time to study.",
         answers: [
           {
             question: 'Did you ask about reduced hours?',
@@ -210,7 +208,7 @@ describe('API Endpoints Integration Tests', () => {
       expect(response.body.still_unknown.length).toBe(2);
       expect(response.body.next_checks.length).toBe(2);
       expect(response.body.disclaimer).toBe(
-        'This is a thinking aid, not advice. The decision is yours.'
+        'This is a thinking aid, not advice. The decision is yours.',
       );
     });
   });
@@ -224,7 +222,7 @@ describe('API Endpoints Integration Tests', () => {
 
     it('handles AI service failure with specific friendly message', async () => {
       vi.spyOn(geminiService, 'analyzeDecision').mockRejectedValue(
-        new Error('AI service connection failed')
+        new Error('AI service connection failed'),
       );
 
       const response = await request(app)

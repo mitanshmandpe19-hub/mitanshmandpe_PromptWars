@@ -22,13 +22,18 @@ describe('Sample Decision End-to-End Walkthrough', () => {
       stated_reason: 'Not having enough time to study',
       assumption: 'Internship schedule is strictly inflexible and cannot be reduced',
       focused_on: ['Study time requirements', 'Academic performance'],
-      not_mentioned: ['Talking to manager about reduced hours', 'Taking a temporary leave of absence', 'Remote hours'],
+      not_mentioned: [
+        'Talking to manager about reduced hours',
+        'Taking a temporary leave of absence',
+        'Remote hours',
+      ],
       blind_spots: [
         {
           id: 'bs-1',
           title: 'Unnegotiated Schedule Assumption',
           type: 'Assumption',
-          why_flagged: 'Have you verified whether your employer offers flexible hours or a reduced workload for exams?',
+          why_flagged:
+            'Have you verified whether your employer offers flexible hours or a reduced workload for exams?',
           evidence_quote: "don't have enough time to study",
           evidence_status: 'direct',
           quote_verified: false,
@@ -39,7 +44,8 @@ describe('Sample Decision End-to-End Walkthrough', () => {
           id: 'bs-2',
           title: 'Career Momentum Risk',
           type: 'Risk',
-          why_flagged: 'What are the long-term career trade-offs of stepping away from this internship completely?',
+          why_flagged:
+            'What are the long-term career trade-offs of stepping away from this internship completely?',
           evidence_quote: 'quitting my internship',
           evidence_status: 'direct',
           quote_verified: false,
@@ -50,7 +56,8 @@ describe('Sample Decision End-to-End Walkthrough', () => {
           id: 'bs-3',
           title: 'Alternative Study Optimization',
           type: 'Missing Factor',
-          why_flagged: 'Are there other time commitments or study habits that could be restructured first?',
+          why_flagged:
+            'Are there other time commitments or study habits that could be restructured first?',
           evidence_quote: null,
           evidence_status: 'none',
           quote_verified: false,
@@ -58,14 +65,13 @@ describe('Sample Decision End-to-End Walkthrough', () => {
           status: 'open',
         },
       ],
-      top_question: 'What would happen if you requested a temporary 10-hour work week from your manager for the exam season?',
+      top_question:
+        'What would happen if you requested a temporary 10-hour work week from your manager for the exam season?',
     };
 
     vi.spyOn(geminiService, 'analyzeDecision').mockResolvedValue(mockAnalyzeResponse);
 
-    const res = await request(app)
-      .post('/api/analyze')
-      .send({ text: sampleDecisionText });
+    const res = await request(app).post('/api/analyze').send({ text: sampleDecisionText });
 
     expect(res.status).toBe(200);
     expect(res.body.needs_more_input).toBe(false);
@@ -81,7 +87,7 @@ describe('Sample Decision End-to-End Walkthrough', () => {
     expect(res.body.blind_spots[2].evidence_quote).toBeNull();
 
     expect(res.body.top_question).toBe(
-      'What would happen if you requested a temporary 10-hour work week from your manager for the exam season?'
+      'What would happen if you requested a temporary 10-hour work week from your manager for the exam season?',
     );
   });
 
@@ -114,7 +120,8 @@ describe('Sample Decision End-to-End Walkthrough', () => {
           id: 'bs-2',
           title: 'Team Workload Distribution',
           type: 'Risk',
-          why_flagged: 'Will reducing hours leave high-priority team tasks stalled during your crunch period?',
+          why_flagged:
+            'Will reducing hours leave high-priority team tasks stalled during your crunch period?',
           evidence_quote: null,
           evidence_status: 'none',
           quote_verified: false,
@@ -122,7 +129,8 @@ describe('Sample Decision End-to-End Walkthrough', () => {
           status: 'open',
         },
       ],
-      top_question: 'Have you aligned with your project team on which tasks will be paused during your 10-hour schedule?',
+      top_question:
+        'Have you aligned with your project team on which tasks will be paused during your 10-hour schedule?',
       status_change_notes: [
         {
           id: 'bs-1',
@@ -163,9 +171,7 @@ describe('Sample Decision End-to-End Walkthrough', () => {
         'Confirmed manager willingness to accommodate exam season with 10h/week',
         'Preserved internship status and career continuity while reclaiming study hours',
       ],
-      still_unknown: [
-        'Whether team commitments are fully delegated during reduced hours',
-      ],
+      still_unknown: ['Whether team commitments are fully delegated during reduced hours'],
       next_checks: [
         'Draft a quick handoff list of ongoing tasks with teammates before starting 10h schedule',
       ],
@@ -180,8 +186,10 @@ describe('Sample Decision End-to-End Walkthrough', () => {
         originalText: sampleDecisionText,
         answers: [
           {
-            question: 'What would happen if you requested a temporary 10-hour work week from your manager for the exam season?',
-            answer: 'I spoke with my manager today and they happily approved working 10 hours a week for the next 4 weeks.',
+            question:
+              'What would happen if you requested a temporary 10-hour work week from your manager for the exam season?',
+            answer:
+              'I spoke with my manager today and they happily approved working 10 hours a week for the next 4 weeks.',
           },
         ],
         analysis: {
@@ -191,7 +199,9 @@ describe('Sample Decision End-to-End Walkthrough', () => {
       });
 
     expect(res.status).toBe(200);
-    expect(res.body.decision).toBe('Shift to 10 hours/week temporary schedule rather than quitting internship');
+    expect(res.body.decision).toBe(
+      'Shift to 10 hours/week temporary schedule rather than quitting internship',
+    );
     expect(res.body.checked.length).toBe(2);
     expect(res.body.still_unknown.length).toBe(1);
     expect(res.body.next_checks.length).toBe(1);
