@@ -2,12 +2,14 @@ import express from 'express';
 import { AnalyzeRequestSchema, validateRequest } from '../services/validation.js';
 import { analyzeDecision } from '../services/gemini.js';
 import { verifyBlindSpotQuotes } from '../services/quoteVerifier.js';
+import { analyzeCache } from '../services/analyzeCache.js';
 
 const router = express.Router();
 
 /**
  * POST /api/analyze
  * Analyzes the user's initial decision text for hidden blind spots and missing factors.
+ * Results for identical input are cached in-memory using a secure SHA-256 hash.
  */
 router.post('/', async (req, res, next) => {
   try {
@@ -18,10 +20,16 @@ router.post('/', async (req, res, next) => {
 
     const { text } = validation.data;
 
-    // Call Gemini API (with single retry on invalid output)
+    // Check in-memory cache
+    const cachedResponse = analyzeCache.get(text);
+    if (cachedResponse) {
+      return res.status(200).json(cachedResponse);
+    }
+
+    // Call Gemini API
     const aiResult = await analyzeDecision(text);
 
-    // Verify evidence quotes against user text using backend verifier
+    // Verify evidence quotes against user text using backend deterministic verifier
     const verifiedBlindSpots = verifyBlindSpotQuotes(aiResult.blind_spots, text);
 
     const responsePayload = {
@@ -34,6 +42,9 @@ router.post('/', async (req, res, next) => {
       blind_spots: verifiedBlindSpots.slice(0, 3),
       top_question: aiResult.top_question || null,
     };
+
+    // Store in cache
+    analyzeCache.set(text, responsePayload);
 
     return res.status(200).json(responsePayload);
   } catch (err) {

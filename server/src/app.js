@@ -43,17 +43,32 @@ export function createApp() {
   // Serve static client bundle if client/dist exists (for single-URL deployment)
   const clientDistPath = path.resolve(__dirname, '../../client/dist');
   if (fs.existsSync(clientDistPath)) {
-    app.use(express.static(clientDistPath));
+    app.use(
+      express.static(clientDistPath, {
+        maxAge: '1y',
+        immutable: true,
+        setHeaders: (res, filePath) => {
+          if (filePath.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+          }
+        },
+      }),
+    );
     app.use((req, res, next) => {
       if (req.path.startsWith('/api')) {
         return next();
       }
+      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
       return res.sendFile(path.join(clientDistPath, 'index.html'));
     });
   } else {
     // Development fallback when client is not yet built
     app.get('/', (req, res) => {
-      res.status(200).send('<h1>Blind Spot API</h1><p>Backend is active. Frontend build at /client/dist not found yet.</p>');
+      res
+        .status(200)
+        .send(
+          '<h1>Blind Spot API</h1><p>Backend is active. Frontend build at /client/dist not found yet.</p>',
+        );
     });
   }
 
